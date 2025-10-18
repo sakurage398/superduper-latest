@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Infos</title>
+    <link rel="stylesheet" href="CSS/admin-student_perinfo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo" class="logo">
+            <div class="title">ALAMS</div>
+        </div>
+        <div class="admin-menu">
+            <span>ADMIN</span>
+            <i class="fa-solid fa-caret-down"></i>
+            <div class="dropdown">
+                <button class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="admin-dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="admin-register.html" class="menu-item"><i class="fa-solid fa-qrcode" style="color: #ffffff;"></i>Registration</a>
+            <a href="admin-scanner.html" class="menu-item"><i class="fa-solid fa-expand"></i> Scanner</a>
+            <a href="admin-students_attendance.html" class="menu-item"><i class="fa-solid fa-clipboard" style="color: #ffffff;"></i>Attendances</a>
+            <a href="admin-student_perinfo.html" class="menu-item"><i class="fa-solid fa-user"></i>Personal Information</a>
+            <a href="admin-user.html" class="menu-item "><i class="fa-solid fa-user-gear"></i> User Management</a>
+        </div>
+
+        <div class="dashboard">
+            <div class="tabs-container">
+                <a href="admin-student_perinfo.html" class="tab">Student</a>
+                <a href="admin-faculty_perinfo.html" class="tab">Faculty</a>
+                <a href="admin-staff_perinfo.html" class="tab">Staff</a>
+            </div>
+            <h1>Student Information</h1>
+
+            <div class="content-container">
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Search students...">
+                    <div class="button-group">
+                        <button class="add-file-btn"><i class="fa-solid fa-file-import"></i>Add File</button>
+                        <button class="add-user-btn"><i class="fa-solid fa-plus"></i>Add Student</button>
+                    </div>
+                </div>
+
+                <div class="user-table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Picture</th>
+                                <th>Pin Code</th>
+                                <th>Name</th>
+                                <th>
+                                    Department
+                                    <select id="department-filter" class="filter-select">
+                                        <option value="">All Departments</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Program
+                                    <select id="program-filter" class="filter-select">
+                                        <option value="">All Programs</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Year
+                                    <select id="year-filter" class="filter-select">
+                                        <option value="">All Years</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Block
+                                    <select id="block-filter" class="filter-select">
+                                        <option value="">All Blocks</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Registration
+                                    <select id="registration-filter" class="filter-select">
+                                        <option value="">All</option>
+                                        <option value="Registered">Registered</option>
+                                        <option value="Unregistered">Unregistered</option>
+                                    </select>
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table body will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="modal-content">
+            Are you sure you want to logout?
+            <div class="modal-buttons">
+                <button class="yes-btn">Yes</button>
+                <button class="no-btn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-user-modal">
+        <div class="add-user-form">
+            <div class="form-header">
+                <div class="form-title"><i class="fa-solid fa-plus"></i>Add Student Information</div>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="add-student-form">
+                <div class="form-group">
+                <label for="student-number">Student Number:</label>
+                <input type="number" id="student-number" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label for="student-name">Name:</label>
+                    <input type="text" id="student-name" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <label for="student-department">Department:</label>
+                    <select id="student-department">
+                        <option value="" disabled selected>Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-program">Program:</label>
+                    <select id="student-program">
+                        <option value="" disabled selected>Select Program</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-year">Year:</label>
+                    <select id="student-year">
+                        <option value="" disabled selected>Select Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-block">Block:</label>
+                    <select id="student-block">
+                        <option value="" disabled selected>Select Block</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                <label for="student-picture">Picture:</label>
+                <div class="picture-upload">
+                    <div class="picture-preview-container">
+                        <img id="picture-preview" class="picture-preview" src="" alt="Preview">
+                        <div id="picture-placeholder" class="picture-placeholder">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="student-picture" accept="image/*" style="display: none;">
+                    <div class="picture-actions">
+                        <button type="button" class="picture-btn" onclick="document.getElementById('student-picture').click()">
+                            Choose Picture
+                        </button>
+                        <button type="button" class="remove-picture-btn" id="remove-picture-btn" style="display: none;">
+                            Remove Picture
+                        </button>
+                    </div>
+                </div>
+            </div>
+                
+                <div class="form-group">
+                    <label for="student-pin">Pin Code:</label>
+                    <div class="pin-display" id="pin-display">------</div>
+                    <button type="button" class="generate-pin-btn" id="generate-pin">
+                        <i class="fa-solid fa-refresh"></i> Generate New PIN
+                    </button>
+                    <input type="hidden" id="student-pin-code">
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-registration">Registration Status:</label>
+                    <div class="role-display" id="student-registration">Unregistered</div>
+                    <small>Note: Status will change to "Registered" when QR code is scanned.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="picture-modal" id="picture-modal">
+        <div class="picture-modal-content">
+            <button class="picture-modal-close" onclick="closePictureModal()">&times;</button>
+            <img id="modal-picture" src="" alt="Student Picture">
+        </div>
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    logPageAccess();
+    loadStudents();
+    
+    const adminMenu = document.querySelector(".admin-menu");
+    const dropdown = document.querySelector(".dropdown");
+    const logoutBtn = document.querySelector(".logout-btn");
+    const logoutModal = document.querySelector(".modal");
+    const yesBtn = document.querySelector(".yes-btn");
+    const noBtn = document.querySelector(".no-btn");
+    const addStudentBtn = document.querySelector(".add-user-btn");
+    const addUserModal = document.querySelector(".add-user-modal");
+    const closeModalBtn = document.querySelector(".close-btn");
+    const cancelBtn = document.querySelector(".cancel-btn");
+    const saveBtn = document.querySelector(".save-btn");
+    const studentForm = document.querySelector("#add-student-form");
+    const formTitle = document.querySelector(".form-title");
+    
+    adminMenu.addEventListener("click", function (event) {
+        event.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        dropdown.style.display = "none";
+    });
+    
+    logoutBtn.addEventListener("click", function () {
+        logoutModal.style.display = "flex";
+    });
+
+    yesBtn.addEventListener("click", function () {
+        window.location.href = "login.html";
+    });
+
+    noBtn.addEventListener("click", function () {
+        logoutModal.style.display = "none";
+    });
+
+    function logAuditTrail(action, description) {
+        const formData = new FormData();
+        formData.append('action', 'log_audit_trail');
+        formData.append('audit_action', action);
+        formData.append('description', description);
+
+        fetch('PHP/audit_functions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'success') {
+                console.error('Failed to log audit trail:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error logging audit trail:', error);
+        });
+    }
+
+    // Function to log page access
+    function logPageAccess() {
+        logAuditTrail('PERSONAL_INFO_ACCESS', 'Accessed student personal information page');
+    }
+    
+    const departmentsData = {
+        "College of Engineering and Architecture": {
+            programs: [
+                { name: "BS Electronics Engineering", years: [1, 2, 3, 4] },
+                { name: "BS Electrical Engineering", years: [1, 2, 3, 4] },
+                { name: "BS Mechanical Engineering", years: [1, 2, 3, 4] },
+                { name: "BS Civil Engineering", years: [1, 2, 3, 4] },
+                { name: "BS Computer Engineering", years: [1, 2, 3, 4] }
+            ]
+        },
+        "College of Computer Studies": {
+            programs: [
+                { name: "BS Information Technology", years: [1, 2, 3, 4] },
+                { name: "BS Computer Science", years: [1, 2, 3, 4] }
+            ]
+        },
+        "College of Accountancy and Business Program": {
+            programs: [
+                { name: "BS Accountancy", years: [1, 2, 3, 4] },
+                { name: "BS Business Administration", years: [1, 2, 3, 4] }
+            ]
+        },
+        "College of Maritime Studies": {
+            programs: [
+                { name: "BS Maritime Engineering", years: [1, 2, 3] },
+                { name: "BS Maritime Transportation", years: [1, 2, 3] }
+            ]
+        },
+        "College of Hospitality and Tourism Management": {
+            programs: [
+                { name: "BS Hospitality Management", years: [1, 2, 3, 4] },
+                { name: "BS Tourism Management", years: [1, 2, 3, 4] }
+            ]
+        },
+        "College of Criminal Justice Education": {
+            programs: [
+                { name: "BS Criminology", years: [1, 2, 3, 4] }
+            ]
+        },
+        "College of Education and Journalism": {
+            programs: [
+                { name: "Bachelor of Secondary Education", years: [1, 2, 3, 4] },
+                { name: "Bachelor of Elementary Education", years: [1, 2, 3, 4] }
+            ]
+        }
+    };
+    
+    initializeFilters();
+    initializePictureHandling();
+    initializePinGeneration();
+    
+    addStudentBtn.addEventListener("click", showAddStudentForm);
+    closeModalBtn.addEventListener("click", closeUserModal);
+    cancelBtn.addEventListener("click", closeUserModal);
+    saveBtn.addEventListener("click", saveStudent);
+    
+    const searchBox = document.querySelector(".search-box");
+    if (searchBox) {
+        searchBox.addEventListener("input", function() {
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(function() {
+              
+                if (searchBox.value.length > 0) {
+                    logAuditTrail('SEARCH_PERSONAL_INFO', `Searched personal information: ${searchBox.value}`);
+                }
+                filterStudents(); 
+            }, 1000);
+        });
+        
+        searchBox.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                clearTimeout(this.searchTimer);
+                if (this.value.length > 0) {
+                    logAuditTrail('SEARCH_PERSONAL_INFO', `Searched personal information: ${this.value}`);
+                }
+                filterStudents(); 
+            }
+        });
+    }
+    const departmentFilter = document.getElementById('department-filter');
+    const programFilter = document.getElementById('program-filter');
+    const yearFilter = document.getElementById('year-filter');
+    const blockFilter = document.getElementById('block-filter');
+    const registrationFilter = document.getElementById('registration-filter');
+    
+    if (departmentFilter) departmentFilter.addEventListener('change', handleDepartmentChange);
+    if (programFilter) programFilter.addEventListener('change', filterStudents);
+    if (yearFilter) yearFilter.addEventListener('change', filterStudents);
+    if (blockFilter) blockFilter.addEventListener('change', filterStudents);
+    if (registrationFilter) registrationFilter.addEventListener('change', filterStudents);
+    
+    let currentPictureData = null;
+    
+    function loadStudents() {
+        const formData = new FormData();
+        formData.append('action', 'get_all');
+        
+        fetch('PHP/admin-student_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateStudentsTable(data.data);
+            } else {
+                console.error('Error loading students:', data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    function populateStudentsTable(students) {
+        const tbody = document.querySelector(".user-table tbody");
+        tbody.innerHTML = '';
+        
+        if (students.length === 0) {
+            const noRecordsRow = document.createElement("tr");
+            noRecordsRow.innerHTML = `
+                <td colspan="10" style="text-align: center; padding: 20px; font-weight: bold;">No student records found.</td>
+            `;
+            tbody.appendChild(noRecordsRow);
+            return;
+        }
+        
+        students.forEach(student => {
+            const row = document.createElement("tr");
+            row.dataset.id = student.id;
+            
+            const statusColor = student.registration_status === 'Registered' ? 'green' : 'red';
+            
+            // FIXED: Use the same picture display logic as staff
+            const pictureCell = student.picture ? 
+                `<img src="${student.picture}" alt="Student" class="profile-picture" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <div class="no-picture" style="display: none;"><i class="fa-solid fa-user"></i></div>` :
+                `<div class="no-picture"><i class="fa-solid fa-user"></i></div>`;
+            
+            const pinCodeCell = student.pin_code ? 
+                `<span class="pin-code-display">${student.pin_code}</span>` :
+                `<span style="color: #999;">Not Set</span>`;
+            
+            row.innerHTML = `
+                <td>${student.student_number}</td>
+                <td style="text-align: center; vertical-align: middle;">
+                    ${pictureCell}
+                </td>
+                <td>${pinCodeCell}</td>
+                <td>${student.name}</td>
+                <td>${student.department}</td>
+                <td>${student.program}</td>
+                <td>${student.year_level}</td>
+                <td>${student.block}</td>
+                <td><span style="color: ${statusColor}; font-weight: bold;">${student.registration_status || 'Unregistered'}</span></td>
+                <td>
+                    <i class="fa-solid fa-edit edit-btn" style="color: #8869BB; margin-right: 10px; cursor: pointer;"></i>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        setupActionButtons();
+    }
+    
+    function setupActionButtons() {
+            const editButtons = document.querySelectorAll('.edit-btn');
+            
+            editButtons.forEach(button => {
+                // Remove any existing event listeners to prevent duplicates
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                newButton.addEventListener('click', function() {
+                    console.log('Edit button clicked');
+                    
+                    const row = this.closest('tr');
+                    const studentId = row.dataset.id;
+                    const studentName = row.cells[3].textContent;
+                    
+                    // Get current values from the table row
+                    const studentNumber = row.cells[0].textContent;
+                    const name = row.cells[3].textContent;
+                    const department = row.cells[4].textContent;
+                    const program = row.cells[5].textContent;
+                    const year = row.cells[6].textContent;
+                    const block = row.cells[7].textContent;
+                    const registrationStatus = row.cells[8].textContent.trim();
+                    
+                    console.log('Current row data:', { studentId, studentNumber, name, department, program, year, block });
+                    
+                    logAuditTrail('EDIT_STUDENT_INFO', `Editing student information: ${studentName}`);
+                    
+                    // Call the edit function with current values
+                    showEditStudentForm(studentId, studentNumber, name, department, program, year, block, registrationStatus);
+                });
+            });
+        }
+
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            const tabName = this.textContent.trim();
+            logAuditTrail('SWITCH_TAB', `Switched to ${tabName} personal information tab`);
+        });
+    });
+
+    // File upload functionality - CSV ONLY
+    const addFileBtn = document.querySelector(".add-file-btn");
+    const fileUploadModal = document.createElement("div");
+    fileUploadModal.className = "file-upload-modal";
+    fileUploadModal.innerHTML = `
+        <div class="file-upload-form">
+            <div class="file-upload-header">
+                <div class="file-upload-title"><i class="fa-solid fa-file-import"></i> Student Personal Information</div>
+                <button class="close-upload-btn">&times;</button>
+            </div>
+            
+            <div class="file-upload-instructions">
+                <h4>File Requirements:</h4>
+                <ul>
+                    <li>File format: CSV only</li>
+                    <li>Required columns: Student Number, Name, Department, Program, Year, Block</li>
+                    <li>Optional columns: Pincode (6 digits)</li>
+                    <li>Maximum file size: 5MB</li>
+                    <li>First row should contain column headers</li>
+                    <li>Year format: "1st Year", "2nd Year", "3rd Year", "4th Year"</li>
+                    <li>Block format: "Block 1", "Block 2", etc.</li>
+                </ul>
+            </div>
+            
+            <div class="file-upload-area" id="file-upload-area">
+                <i class="fa-solid fa-cloud-upload-alt"></i>
+                <div class="file-upload-text">Click to upload or drag and drop</div>
+                <div class="file-upload-hint">CSV files only</div>
+                <input type="file" id="student-file" class="file-input" accept=".csv">
+            </div>
+            
+            <div class="upload-preview" id="upload-preview">
+                <h4>File Preview (First 5 rows):</h4>
+                <div id="preview-table"></div>
+            </div>
+            
+            <div class="upload-actions">
+                <button class="cancel-upload-btn">Cancel</button>
+                <button class="upload-btn" id="upload-btn" disabled>Upload File</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(fileUploadModal);
+
+    // File upload event listeners
+    addFileBtn.addEventListener("click", function() {
+        logAuditTrail('ADD_FILE_STUDENT', 'Opened file upload modal for student data');
+        fileUploadModal.style.display = "flex";
+    });
+
+    document.querySelector(".close-upload-btn").addEventListener("click", function() {
+        fileUploadModal.style.display = "none";
+        resetFileUpload();
+    });
+
+    document.querySelector(".cancel-upload-btn").addEventListener("click", function() {
+        fileUploadModal.style.display = "none";
+        resetFileUpload();
+    });
+
+    // File upload area functionality
+    const fileUploadArea = document.getElementById("file-upload-area");
+    const fileInput = document.getElementById("student-file");
+    const uploadPreview = document.getElementById("upload-preview");
+    const previewTable = document.getElementById("preview-table");
+    const uploadBtn = document.getElementById("upload-btn");
+
+    fileUploadArea.addEventListener("click", function() {
+        fileInput.click();
+    });
+
+    fileUploadArea.addEventListener("dragover", function(e) {
+        e.preventDefault();
+        fileUploadArea.style.backgroundColor = "#e9ecef";
+    });
+
+    fileUploadArea.addEventListener("dragleave", function() {
+        fileUploadArea.style.backgroundColor = "";
+    });
+
+    fileUploadArea.addEventListener("drop", function(e) {
+        e.preventDefault();
+        fileUploadArea.style.backgroundColor = "";
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelection(files[0]);
+        }
+    });
+
+    fileInput.addEventListener("change", function(e) {
+        if (e.target.files.length > 0) {
+            handleFileSelection(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelection(file) {
+        // Only accept CSV files
+        if (!file.name.toLowerCase().endsWith('.csv')) {
+            alert('Please select a CSV file only. Excel files are not supported.');
+            return;
+        }
+        
+        if (!file.type.includes('csv') && file.type !== 'text/csv') {
+            alert('Please select a valid CSV file.');
+            return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB.');
+            return;
+        }
+        
+        previewFile(file);
+    }
+
+    function previewFile(file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            parseCSV(e.target.result);
+        };
+        
+        reader.readAsText(file);
+    }
+
+    function parseCSV(csvText) {
+        try {
+            const rows = csvText.split('\n').filter(row => row.trim() !== '');
+            if (rows.length === 0) {
+                alert('CSV file is empty');
+                return;
+            }
+            
+            const headers = rows[0].split(',').map(header => header.trim());
+            
+            // Validate required columns
+            const requiredColumns = ['Student Number', 'Name', 'Department', 'Program', 'Year', 'Block'];
+            const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+            
+            if (missingColumns.length > 0) {
+                alert(`Missing required columns: ${missingColumns.join(', ')}`);
+                return;
+            }
+            
+            const data = rows.slice(1, 6).map(row => {
+                const values = row.split(',').map(value => value.trim());
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index] || '';
+                });
+                return obj;
+            });
+            
+            displayPreview(headers, data);
+            uploadBtn.disabled = false;
+            uploadBtn.fileData = { type: 'csv', data: csvText, filename: 'student_upload.csv' };
+        } catch (error) {
+            alert('Error parsing CSV file: ' + error.message);
+            resetFileUpload();
+        }
+    }
+
+    function displayPreview(headers, data) {
+        let tableHTML = `<table><thead><tr>`;
+        headers.forEach(header => {
+            tableHTML += `<th>${header}</th>`;
+        });
+        tableHTML += `</tr></thead><tbody>`;
+        
+        data.forEach(row => {
+            tableHTML += `<tr>`;
+            headers.forEach(header => {
+                tableHTML += `<td>${row[header] || ''}</td>`;
+            });
+            tableHTML += `</tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        previewTable.innerHTML = tableHTML;
+        uploadPreview.style.display = 'block';
+    }
+
+    function resetFileUpload() {
+        fileInput.value = '';
+        uploadPreview.style.display = 'none';
+        uploadBtn.disabled = true;
+        delete uploadBtn.fileData;
+    }
+
+    // Upload functionality
+    uploadBtn.addEventListener("click", function() {
+        if (!uploadBtn.fileData) return;
+        
+        // For offline functionality, store data in localStorage
+        if (!navigator.onLine) {
+            const uploads = JSON.parse(localStorage.getItem('pendingStudentUploads') || '[]');
+            uploads.push({
+                id: Date.now(),
+                type: uploadBtn.fileData.type,
+                data: uploadBtn.fileData.data,
+                filename: uploadBtn.fileData.filename,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('pendingStudentUploads', JSON.stringify(uploads));
+            
+            alert('File saved for upload when online. You can continue working offline.');
+            fileUploadModal.style.display = "none";
+            resetFileUpload();
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('action', 'bulk_upload');
+        formData.append('file_type', uploadBtn.fileData.type);
+        formData.append('file_data', uploadBtn.fileData.data);
+        formData.append('filename', uploadBtn.fileData.filename);
+        
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        
+        fetch('PHP/admin-student_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(`Successfully uploaded ${data.processed} student records`);
+                fileUploadModal.style.display = "none";
+                resetFileUpload();
+                loadStudents();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading file. Please try again.');
+        })
+        .finally(() => {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = 'Upload File';
+        });
+    });
+
+    // Handle offline/online status
+    window.addEventListener('online', function() {
+        // Process pending uploads when coming online
+        const pendingUploads = JSON.parse(localStorage.getItem('pendingStudentUploads') || '[]');
+        if (pendingUploads.length > 0) {
+            processPendingUploads(pendingUploads);
+        }
+    });
+
+    function processPendingUploads(uploads) {
+        if (uploads.length === 0) return;
+        
+        const upload = uploads[0];
+        const formData = new FormData();
+        formData.append('action', 'bulk_upload');
+        formData.append('file_type', upload.type);
+        formData.append('file_data', upload.data);
+        formData.append('filename', upload.filename);
+        
+        fetch('PHP/admin-student_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const remainingUploads = uploads.slice(1);
+                localStorage.setItem('pendingStudentUploads', JSON.stringify(remainingUploads));
+                
+                if (remainingUploads.length > 0) {
+                    processPendingUploads(remainingUploads);
+                } else {
+                    alert('All pending uploads completed successfully');
+                    loadStudents();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error processing pending upload:', error);
+        });
+    }
+    
+    function showAddStudentForm() {
+        logAuditTrail('ADD_STUDENT', 'Opened add student modal');
+
+        formTitle.textContent = "Add Student Information";
+        
+        // Reset form fields
+        document.querySelector("#student-number").value = "";
+        document.querySelector("#student-name").value = "";
+        document.querySelector("#student-registration").textContent = "Unregistered";
+        
+        // Reset dropdowns to default state
+        const studentDepartment = document.querySelector("#student-department");
+        studentDepartment.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        Object.keys(departmentsData).forEach(dept => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            studentDepartment.appendChild(option);
+        });
+        
+        document.querySelector("#student-program").innerHTML = '<option value="" disabled selected>Select Program</option>';
+        document.querySelector("#student-year").innerHTML = '<option value="" disabled selected>Select Year</option>';
+        document.querySelector("#student-block").innerHTML = '<option value="" disabled selected>Select Block</option>';
+        
+        // Reset picture
+        resetPictureUpload();
+        
+        // Generate new pin
+        generateNewPin();
+        
+        // Set up department change event
+        setupDepartmentChangeEvent();
+        
+        // Remove any edit ID
+        delete saveBtn.dataset.studentId;
+        
+        // Show modal
+        addUserModal.style.display = "flex";
+    }
+    
+    function showEditStudentForm(studentId, studentNumber, name, department, program, year, block, registrationStatus) {
+        console.log('Editing student:', { studentId, studentNumber, name, department, program, year, block });
+        
+        formTitle.textContent = "Edit Student Information";
+        
+        const formData = new FormData();
+        formData.append('action', 'get_student');
+        formData.append('id', studentId);
+        
+        fetch('PHP/admin-student_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                const student = data.data;
+                
+                // Populate basic fields
+                document.querySelector("#student-number").value = student.student_number;
+                document.querySelector("#student-name").value = student.name;
+                document.querySelector("#student-registration").textContent = student.registration_status || 'Unregistered';
+                
+                // Handle picture
+                const preview = document.getElementById('picture-preview');
+                const placeholder = document.getElementById('picture-placeholder');
+                const removeBtn = document.getElementById('remove-picture-btn');
+                
+                if (student.picture) {
+                    preview.src = student.picture;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    removeBtn.style.display = 'block';
+                    currentPictureData = student.picture;
+                } else {
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                    removeBtn.style.display = 'none';
+                    currentPictureData = null;
+                }
+                
+                // Handle pin code
+                if (student.pin_code) {
+                    document.getElementById('pin-display').textContent = student.pin_code;
+                    document.getElementById('student-pin-code').value = student.pin_code;
+                } else {
+                    generateNewPin();
+                }
+                
+                // FIXED: Populate department dropdown correctly
+                const studentDepartment = document.querySelector("#student-department");
+                studentDepartment.innerHTML = '<option value="" disabled>Select Department</option>';
+                Object.keys(departmentsData).forEach(dept => {
+                    const option = document.createElement("option");
+                    option.value = dept;
+                    option.textContent = dept;
+                    // Set selected based on actual saved department
+                    if (dept === student.department) {
+                        option.selected = true;
+                        console.log('Setting department to:', dept);
+                    }
+                    studentDepartment.appendChild(option);
+                });
+                
+                // FIXED: Populate program dropdown based on selected department
+                const studentProgram = document.querySelector("#student-program");
+                if (student.department && departmentsData[student.department]) {
+                    studentProgram.innerHTML = '<option value="" disabled>Select Program</option>';
+                    departmentsData[student.department].programs.forEach(prog => {
+                        const option = document.createElement("option");
+                        option.value = prog.name;
+                        option.textContent = prog.name;
+                        // Set selected based on actual saved program
+                        if (prog.name === student.program) {
+                            option.selected = true;
+                            console.log('Setting program to:', prog.name);
+                        }
+                        studentProgram.appendChild(option);
+                    });
+                } else {
+                    studentProgram.innerHTML = '<option value="" disabled selected>Select Program</option>';
+                }
+                
+                // FIXED: Populate year dropdown
+                const studentYear = document.querySelector("#student-year");
+                studentYear.innerHTML = '<option value="" disabled>Select Year</option>';
+                for (let i = 1; i <= 4; i++) {
+                    const option = document.createElement("option");
+                    const suffix = getOrdinalSuffix(i);
+                    const yearValue = `${i}${suffix} Year`;
+                    option.value = yearValue;
+                    option.textContent = yearValue;
+                    // Set selected based on actual saved year
+                    if (yearValue === student.year_level) {
+                        option.selected = true;
+                        console.log('Setting year to:', yearValue);
+                    }
+                    studentYear.appendChild(option);
+                }
+                
+                // FIXED: Populate block dropdown
+                const studentBlock = document.querySelector("#student-block");
+                studentBlock.innerHTML = '<option value="" disabled>Select Block</option>';
+                for (let blockNum = 1; blockNum <= 15; blockNum++) {
+                    const option = document.createElement("option");
+                    const blockValue = `Block ${blockNum}`;
+                    option.value = blockValue;
+                    option.textContent = blockValue;
+                    // Set selected based on actual saved block
+                    if (blockValue === student.block) {
+                        option.selected = true;
+                        console.log('Setting block to:', blockValue);
+                    }
+                    studentBlock.appendChild(option);
+                }
+                
+                // Set up department change event for future changes
+                setupDepartmentChangeEvent();
+                
+                // Store the student ID for update operation
+                saveBtn.dataset.studentId = studentId;
+                
+                // Show the modal
+                addUserModal.style.display = "flex";
+                
+                console.log('Form populated with:', {
+                    department: student.department,
+                    program: student.program,
+                    year: student.year_level,
+                    block: student.block
+                });
+                
+            } else {
+                alert('Error loading student data: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading student data: ' + error.message);
+        });
+    }
+    
+    function setupDepartmentChangeEvent() {
+        const studentDepartment = document.querySelector("#student-department");
+        const studentProgram = document.querySelector("#student-program");
+        const studentYear = document.querySelector("#student-year");
+        const studentBlock = document.querySelector("#student-block");
+        
+        // Remove existing event listeners by cloning
+        const newDepartment = studentDepartment.cloneNode(true);
+        studentDepartment.parentNode.replaceChild(newDepartment, studentDepartment);
+        
+        const newProgram = studentProgram.cloneNode(true);
+        studentProgram.parentNode.replaceChild(newProgram, studentProgram);
+        
+        newDepartment.addEventListener("change", function() {
+            const selectedDepartment = newDepartment.value;
+            const programs = departmentsData[selectedDepartment]?.programs || [];
+            
+            newProgram.innerHTML = '<option value="" disabled selected>Select Program</option>';
+            programs.forEach(program => {
+                const option = document.createElement("option");
+                option.value = program.name;
+                option.textContent = program.name;
+                newProgram.appendChild(option);
+            });
+            
+            // Reset year and block when department changes
+            studentYear.innerHTML = '<option value="" disabled selected>Select Year</option>';
+            studentBlock.innerHTML = '<option value="" disabled selected>Select Block</option>';
+        });
+        
+        newProgram.addEventListener("change", function() {
+            const selectedDepartment = newDepartment.value;
+            const selectedProgram = newProgram.value;
+            const programData = departmentsData[selectedDepartment]?.programs.find(program => program.name === selectedProgram);
+            
+            if (programData) {
+                studentYear.innerHTML = '<option value="" disabled selected>Select Year</option>';
+                programData.years.forEach(year => {
+                    const option = document.createElement("option");
+                    const suffix = getOrdinalSuffix(year);
+                    const yearValue = `${year}${suffix} Year`;
+                    option.value = yearValue;
+                    option.textContent = yearValue;
+                    studentYear.appendChild(option);
+                });
+                
+                studentBlock.innerHTML = '<option value="" disabled selected>Select Block</option>';
+                for (let blockNum = 1; blockNum <= 15; blockNum++) {
+                    const option = document.createElement("option");
+                    option.value = `Block ${blockNum}`;
+                    option.textContent = `Block ${blockNum}`;
+                    studentBlock.appendChild(option);
+                }
+            } else {
+                studentYear.innerHTML = '<option value="" disabled selected>Select Year</option>';
+                studentBlock.innerHTML = '<option value="" disabled selected>Select Block</option>';
+            }
+        });
+        
+        return { newDepartment, newProgram };
+    }
+    
+    function closeUserModal() {
+        addUserModal.style.display = "none";
+        currentPictureData = null;
+    }
+    
+    function saveStudent() {
+        const studentNumber = document.querySelector("#student-number").value;
+        const name = document.querySelector("#student-name").value;
+        const department = document.querySelector("#student-department").value;
+        const program = document.querySelector("#student-program").value;
+        const year = document.querySelector("#student-year").value;
+        const block = document.querySelector("#student-block").value;
+        const registrationStatus = document.querySelector("#student-registration").textContent;
+        const pinCode = document.getElementById('student-pin-code').value;
+        const pictureFile = document.getElementById('student-picture').files[0];
+        
+        // Check if picture was removed (no file selected AND currentPictureData is null)
+        const isPictureRemoved = !pictureFile && currentPictureData === null;
+        
+        if (studentNumber && name && department && program && year && block) {
+            const formData = new FormData();
+            const isEdit = !!saveBtn.dataset.studentId;
+            
+            if (isEdit) {
+                formData.append('action', 'edit');
+                formData.append('id', saveBtn.dataset.studentId);
+            } else {
+                formData.append('action', 'add');
+            }
+            
+            formData.append('student_number', studentNumber.toString());
+            formData.append('student_name', name);
+            formData.append('department', department);
+            formData.append('program', program);
+            formData.append('year', year);
+            formData.append('block', block);
+            formData.append('registration_status', registrationStatus);
+            formData.append('pin_code', pinCode);
+            
+            // Handle picture scenarios:
+            if (pictureFile) {
+                // New picture uploaded
+                formData.append('picture_file', pictureFile);
+            } else if (isEdit) {
+                if (isPictureRemoved) {
+                    // Picture was explicitly removed
+                    formData.append('remove_picture', '1');
+                } else if (currentPictureData) {
+                    // Keep existing picture
+                    formData.append('existing_picture', currentPictureData);
+                }
+            }
+            
+            fetch('PHP/admin-student_perinfo.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    closeUserModal();
+                    loadStudents();
+                    alert(isEdit ? 'Student updated successfully!' : 'Student added successfully!');
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again. Error: ' + error.message);
+            });
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+    
+    function initializePictureHandling() {
+        const pictureInput = document.getElementById('student-picture');
+        const removePictureBtn = document.getElementById('remove-picture-btn');
+
+        if (pictureInput) {
+            pictureInput.addEventListener('change', handlePictureUpload);
+        }
+        if (removePictureBtn) {
+            removePictureBtn.addEventListener('click', removePicture);
+        }
+    }
+
+    function handlePictureUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentPictureData = e.target.result;
+                const preview = document.getElementById('picture-preview');
+                const placeholder = document.getElementById('picture-placeholder');
+                const removeBtn = document.getElementById('remove-picture-btn');
+                
+                preview.src = currentPictureData;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                removeBtn.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removePicture() {
+        const preview = document.getElementById('picture-preview');
+        const placeholder = document.getElementById('picture-placeholder');
+        const removeBtn = document.getElementById('remove-picture-btn');
+        const pictureInput = document.getElementById('student-picture');
+        
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        removeBtn.style.display = 'none';
+        pictureInput.value = '';
+        currentPictureData = null;
+    }
+
+    function resetPictureUpload() {
+        const preview = document.getElementById('picture-preview');
+        const placeholder = document.getElementById('picture-placeholder');
+        const removeBtn = document.getElementById('remove-picture-btn');
+        const fileInput = document.getElementById('student-picture');
+        
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        removeBtn.style.display = 'none';
+        fileInput.value = '';
+        currentPictureData = null;
+    }
+
+    function initializePinGeneration() {
+        const generatePinBtn = document.getElementById('generate-pin');
+        if (generatePinBtn) {
+            generatePinBtn.addEventListener('click', generateNewPin);
+        }
+        
+        generateNewPin();
+    }
+
+    function generateNewPin() {
+        const pin = Math.floor(100000 + Math.random() * 900000).toString();
+        const pinDisplay = document.getElementById('pin-display');
+        const pinInput = document.getElementById('student-pin-code');
+        
+        if (pinDisplay) {
+            pinDisplay.textContent = pin;
+        }
+        if (pinInput) {
+            pinInput.value = pin;
+        }
+    }
+
+    window.viewPicture = function(pictureData) {
+        const modal = document.getElementById('picture-modal');
+        const modalPicture = document.getElementById('modal-picture');
+        
+        if (modal && modalPicture && pictureData) {
+            modalPicture.src = pictureData;
+            modalPicture.onerror = function() {
+                console.error('Failed to load picture:', pictureData);
+                modal.style.display = 'none';
+            };
+            modal.style.display = 'flex';
+        }
+    }
+
+    window.closePictureModal = function() {
+        const modal = document.getElementById('picture-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    function initializeFilters() {
+        const departmentFilter = document.getElementById('department-filter');
+        if (departmentFilter) {
+            departmentFilter.innerHTML = '<option value="">All Departments</option>';
+            Object.keys(departmentsData).forEach(dept => {
+                const option = document.createElement("option");
+                option.value = dept;
+                option.textContent = dept;
+                departmentFilter.appendChild(option);
+            });
+        }
+        
+        const programFilter = document.getElementById('program-filter');
+        if (programFilter) {
+            programFilter.innerHTML = '<option value="">All Programs</option>';
+            let allPrograms = new Set();
+            Object.values(departmentsData).forEach(dept => {
+                dept.programs.forEach(program => {
+                    allPrograms.add(program.name);
+                });
+            });
+            Array.from(allPrograms).sort().forEach(program => {
+                const option = document.createElement("option");
+                option.value = program;
+                option.textContent = program;
+                programFilter.appendChild(option);
+            });
+        }
+        
+        const yearFilter = document.getElementById('year-filter');
+        if (yearFilter) {
+            yearFilter.innerHTML = '<option value="">All Years</option>';
+            for(let i = 1; i <= 4; i++) {
+                const option = document.createElement("option");
+                const suffix = getOrdinalSuffix(i);
+                option.value = `${i}${suffix} Year`;
+                option.textContent = `${i}${suffix} Year`;
+                yearFilter.appendChild(option);
+            }
+        }
+        
+        const blockFilter = document.getElementById('block-filter');
+        if (blockFilter) {
+            blockFilter.innerHTML = '<option value="">All Blocks</option>';
+            for(let i = 1; i <= 15; i++) {
+                const option = document.createElement("option");
+                option.value = `Block ${i}`;
+                option.textContent = `Block ${i}`;
+                blockFilter.appendChild(option);
+            }
+        }
+    }
+    
+    function handleDepartmentChange() {
+        const selectedDept = departmentFilter.value;
+        
+        if (selectedDept) {
+            programFilter.innerHTML = '<option value="">All Programs</option>';
+            departmentsData[selectedDept].programs.forEach(program => {
+                const option = document.createElement("option");
+                option.value = program.name;
+                option.textContent = program.name;
+                programFilter.appendChild(option);
+            });
+        } else {
+            programFilter.innerHTML = '<option value="">All Programs</option>';
+            let allPrograms = new Set();
+            Object.values(departmentsData).forEach(dept => {
+                dept.programs.forEach(program => {
+                    allPrograms.add(program.name);
+                });
+            });
+            Array.from(allPrograms).sort().forEach(program => {
+                const option = document.createElement("option");
+                option.value = program;
+                option.textContent = program;
+                programFilter.appendChild(option);
+            });
+        }
+        
+        filterStudents();
+    }
+    
+    function filterStudents() {
+        const searchTerm = document.querySelector(".search-box").value.toLowerCase();
+        const department = departmentFilter ? departmentFilter.value : '';
+        const program = programFilter ? programFilter.value : '';
+        const year = yearFilter ? yearFilter.value : '';
+        const block = blockFilter ? blockFilter.value : '';
+        const registration = document.getElementById('registration-filter') ? document.getElementById('registration-filter').value : '';
+        
+        const formData = new FormData();
+        formData.append('action', 'search');
+        formData.append('search_term', searchTerm);
+        formData.append('department', department);
+        formData.append('program', program);
+        formData.append('year', year);
+        formData.append('block', block);
+        formData.append('registration_status', registration);
+        
+        fetch('PHP/admin-student_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateStudentsTable(data.data);
+            } else {
+                console.error('Error searching students:', data.message);
+                const tbody = document.querySelector(".user-table tbody");
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 20px; font-weight: bold;">No student records found.</td>
+                    </tr>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const tbody = document.querySelector(".user-table tbody");
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10" style="text-align: center; padding: 20px; font-weight: bold;">No student records found.</td>
+                </tr>
+            `;
+        });
+    }
+    
+    function getOrdinalSuffix(num) {
+        if (num === 1) return "st";
+        if (num === 2) return "nd";
+        if (num === 3) return "rd";
+        return "th";
+    }
+});
+</script>
+</body>
+</html>

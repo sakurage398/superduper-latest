@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/login.css">
+    <title>Library Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Bar with Combined Logo and Title Image -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <img src="img/logo.png" alt="Library Logo" class="header-logo">
+            <img src="img/title.png" alt="Library Title" class="header-title">
+        </div>
+
+        <nav class="header-nav">
+            <a href="admin-about.html" class="nav-link">About</a>
+            <a href="login.html" class="nav-link">Login</a>
+        </nav>
+    </div>
+
+    <!-- Centered Login Container -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>LOGIN</h2>
+                <p>Enter your credentials to access the system</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter username" required>
+                    <span id="username-error" class="error">Please enter a valid username.</span>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter password" required>
+                    <span id="password-error" class="error">Password must have at least 8 characters.</span>
+                </div>
+                <button type="submit" class="login-btn">Log in</button>
+            </form>
+            <p id="login-message" style="color: #e74c3c; display: none; margin-top: 15px;"></p>
+        </div>
+    </div>
+
+    <!-- Pincode Modal -->
+    <div class="pincode-modal" id="pincodeModal">
+        <div class="pincode-container">
+            <h2 class="pincode-title">Two-Factor Authentication</h2>
+            <p class="pincode-subtitle">Enter the 6-digit PIN sent to your email</p>
+            
+            <div class="pincode-input-group">
+                <label for="user-email" class="form-label">Email Address</label>
+                <input type="email" id="user-email" class="form-input" placeholder="Enter your email" readonly>
+            </div>
+            
+            <div class="pincode-input-group">
+                <label for="pincode" class="form-label">6-Digit PIN</label>
+                <input type="text" id="pincode" class="pincode-input" placeholder="Enter 6-digit PIN" maxlength="6" inputmode="numeric" pattern="\d{6}">
+            </div>
+            
+            <div class="pincode-timer">
+                <span id="timer-text">PIN expires in: </span>
+                <span id="timer">5:00</span>
+            </div>
+            
+            <p id="pincode-error" class="pincode-error"></p>
+            
+            <div class="pincode-buttons">
+                <button id="resendPincode" class="pincode-btn secondary">Resend PIN</button>
+                <button id="verifyPincode" class="pincode-btn primary">Verify</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let timerInterval;
+    let pinExpiryTime;
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        // Reset error messages
+        document.getElementById("username-error").style.display = "none";
+        document.getElementById("password-error").style.display = "none";
+        document.getElementById("login-message").style.display = "none";
+        
+        // Validate inputs
+        let username = document.getElementById("username").value.trim();
+        let password = document.getElementById("password").value;
+        let isValid = true;
+        
+        if (username === "") {
+            document.getElementById("username-error").style.display = "block";
+            isValid = false;
+        }
+        
+        if (password.length < 8) {
+            document.getElementById("password-error").style.display = "block";
+            isValid = false;
+        }
+        
+        if (!isValid) return;
+        
+        // Show loading state
+        const loginBtn = document.querySelector(".login-btn");
+        const originalBtnText = loginBtn.textContent;
+        loginBtn.textContent = "Logging in...";
+        loginBtn.disabled = true;
+        
+        // Prepare form data
+        let formData = new FormData(this);
+        
+        // Send login request
+        fetch("PHP/login.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Server Response:", data);
+            console.log("Expiry time received:", data.expiry_time);
+            console.log("Expiry time as Date:", new Date(data.expiry_time));
+            
+            let message = document.getElementById("login-message");
+            
+            if (data.status === "success") {
+                // Redirect on successful login
+                window.location.href = data.redirect;
+            } else if (data.status === "pincode_required") {
+                // Show pincode modal with user email
+                document.getElementById("user-email").value = data.email;
+                document.getElementById("pincodeModal").style.display = "flex";
+                document.getElementById("pincode").focus();
+                
+                // Enable PIN input and verify button
+                document.getElementById("pincode").disabled = false;
+                document.getElementById("verifyPincode").disabled = false;
+                
+                // Start timer with debugging
+                console.log("Starting timer with expiry:", data.expiry_time);
+                startTimer(data.expiry_time);
+            } else {
+                // Show error message
+                message.textContent = data.message || "Login failed. Please try again.";
+                message.style.display = "block";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("login-message").textContent = "An error occurred. Please try again.";
+            document.getElementById("login-message").style.display = "block";
+        })
+        .finally(() => {
+            loginBtn.textContent = originalBtnText;
+            loginBtn.disabled = false;
+        });
+    });
+
+    // Start countdown timer
+    function startTimer(expiryTime) {
+        // If expiryTime is already a Unix timestamp (number), use it directly
+        // If it's a date string, parse it
+        pinExpiryTime = typeof expiryTime === 'number' ? expiryTime : new Date(expiryTime).getTime();
+        
+        // If we still don't have a valid time, use current time + 5 minutes as fallback
+        if (!pinExpiryTime || isNaN(pinExpiryTime)) {
+            pinExpiryTime = new Date().getTime() + 300000; // 5 minutes from now
+        }
+        
+        console.log("Timer started with expiry:", new Date(pinExpiryTime));
+        
+        clearInterval(timerInterval);
+        
+        // Reset timer display
+        document.getElementById("timer").style.color = "#27ae60";
+        document.getElementById("pincode").disabled = false;
+        document.getElementById("verifyPincode").disabled = false;
+        
+        timerInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = pinExpiryTime - now;
+            
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.getElementById("timer").textContent = "00:00";
+                document.getElementById("timer").style.color = "#e74c3c";
+                document.getElementById("verifyPincode").disabled = true;
+                document.getElementById("pincode").disabled = true;
+                showPincodeError("PIN has expired. Please request a new one.");
+                return;
+            }
+            
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("timer").textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+            // Change color when less than 30 seconds
+            if (minutes === 0 && seconds < 30) {
+                document.getElementById("timer").style.color = "#e74c3c";
+            }
+        }, 1000);
+    }
+
+    // Pincode verification
+    document.getElementById("verifyPincode").addEventListener("click", function() {
+        let pincode = document.getElementById("pincode").value;
+        let username = document.getElementById("username").value;
+        let errorElement = document.getElementById("pincode-error");
+        
+        // Reset error
+        errorElement.style.display = "none";
+        errorElement.className = "pincode-error";
+        
+        // Validate pincode
+        if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
+            showPincodeError("PIN must be 6 digits");
+            return;
+        }
+        
+        // Show loading state
+        const verifyBtn = document.getElementById("verifyPincode");
+        const originalBtnText = verifyBtn.textContent;
+        verifyBtn.textContent = "Verifying...";
+        verifyBtn.disabled = true;
+        
+        // Prepare form data
+        let formData = new FormData();
+        formData.append("username", username);
+        formData.append("pincode", pincode);
+        formData.append("verify_pin", "true");
+        
+        // Send verification request
+        fetch("PHP/login.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === "success") {
+                clearInterval(timerInterval);
+                window.location.href = data.redirect;
+            } else {
+                showPincodeError(data.message || "Invalid PIN. Please try again.");
+                document.getElementById("pincode").value = "";
+                document.getElementById("pincode").focus();
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showPincodeError("An error occurred. Please try again.");
+        })
+        .finally(() => {
+            verifyBtn.textContent = originalBtnText;
+            verifyBtn.disabled = false;
+        });
+    });
+
+    // Resend PIN functionality
+    document.getElementById("resendPincode").addEventListener("click", function() {
+        let username = document.getElementById("username").value;
+        let resendBtn = document.getElementById("resendPincode");
+        const originalBtnText = resendBtn.textContent;
+        
+        // Show loading state
+        resendBtn.textContent = "Sending...";
+        resendBtn.disabled = true;
+        
+        // Prepare form data
+        let formData = new FormData();
+        formData.append("username", username);
+        formData.append("resend_pin", "true");
+        
+        // Send resend request
+        fetch("PHP/login.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Resend response:", data);
+            console.log("New expiry time:", data.expiry_time);
+            
+            if (data.status === "success") {
+                showPincodeSuccess("New PIN sent to your email!");
+                document.getElementById("pincode").value = "";
+                document.getElementById("pincode").focus();
+                
+                // Reset and restart timer
+                startTimer(data.expiry_time);
+            } else {
+                showPincodeError(data.message || "Failed to send new PIN. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showPincodeError("An error occurred. Please try again.");
+        })
+        .finally(() => {
+            resendBtn.textContent = originalBtnText;
+            resendBtn.disabled = false;
+        });
+    });
+
+    function showPincodeError(message) {
+        const errorElement = document.getElementById("pincode-error");
+        errorElement.textContent = message;
+        errorElement.className = "pincode-error error";
+        errorElement.style.display = "block";
+    }
+
+    function showPincodeSuccess(message) {
+        const errorElement = document.getElementById("pincode-error");
+        errorElement.textContent = message;
+        errorElement.className = "pincode-error success";
+        errorElement.style.display = "block";
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+            errorElement.style.display = "none";
+        }, 3000);
+    }
+
+    // Allow pressing Enter in pincode field
+    document.getElementById("pincode").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            document.getElementById("verifyPincode").click();
+        }
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById("pincodeModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            clearInterval(timerInterval);
+            this.style.display = "none";
+        }
+    });
+    
+    // Focus username field on page load
+    window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("username").focus();
+    });
+</script>
+</body>
+</html>

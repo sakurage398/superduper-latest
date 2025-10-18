@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Faculty Infos</title>
+    <link rel="stylesheet" href="CSS/admin-faculty_perinfo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo" class="logo">
+            <div class="title">ALAMS </div>
+        </div>
+        <div class="admin-menu">
+            <span>ADMIN</span>
+            <i class="fa-solid fa-caret-down"></i>
+            <div class="dropdown">
+                <button class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+           <a href="admin-dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="admin-register.html" class="menu-item"><i class="fa-solid fa-qrcode" style="color: #ffffff;"></i>Registration</a>
+            <a href="admin-scanner.html" class="menu-item"><i class="fa-solid fa-expand"></i> Scanner</a>
+            <a href="admin-students_attendance.html" class="menu-item"><i class="fa-solid fa-clipboard" style="color: #ffffff;"></i>Attendances</a>
+            <a href="admin-student_perinfo.html" class="menu-item"><i class="fa-solid fa-user"></i>Personal Information</a>
+            <a href="admin-user.html" class="menu-item "><i class="fa-solid fa-user-gear"></i> User Management</a>
+        </div>
+
+        <div class="dashboard">
+            <div class="tabs-container">
+                <a href="admin-student_perinfo.html" class="tab">Student</a>
+                <a href="admin-faculty_perinfo.html" class="tab">Faculty</a>
+                <a href="admin-staff_perinfo.html" class="tab">Staff</a>
+            </div>
+            <h1>Faculty Information</h1>
+
+            <div class="content-container">
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Search faculty...">
+                    <div class="button-group">
+                        <button class="add-file-btn"><i class="fa-solid fa-file-import"></i>Add File</button>
+                        <button class="add-user-btn"><i class="fa-solid fa-plus"></i>Add Faculty</button>
+                    </div>
+                </div>
+
+                                <!-- Replace the current table section with this -->
+                <div class="user-table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Faculty Number</th>
+                                <th>Picture</th>
+                                <th>Pincode</th>
+                                <th>Name</th>
+                                <th>
+                                    Department
+                                    <select id="department-filter" class="filter-select">
+                                        <option value="">All Departments</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Program
+                                    <select id="program-filter" class="filter-select">
+                                        <option value="">All Programs</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    Registration
+                                    <select id="registration-filter" class="filter-select">
+                                        <option value="">All</option>
+                                        <option value="Registered">Registered</option>
+                                        <option value="Unregistered">Unregistered</option>
+                                    </select>
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Faculty data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="modal-content">
+            Are you sure you want to logout?
+            <div class="modal-buttons">
+                <button class="yes-btn">Yes</button>
+                <button class="no-btn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-user-modal">
+        <div class="add-user-form">
+            <div class="form-header">
+                <div class="form-title"> <i class="fa-solid fa-plus"></i>Add Faculty Information</div>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="add-faculty-form">
+                <div class="form-group">
+                    <label for="faculty-number">Faculty Number:</label>
+                    <input type="number" id="faculty-number">
+                </div>
+                <div class="form-group">
+                    <label for="faculty-name">Name:</label>
+                    <input type="text" id="faculty-name" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <label for="faculty-department">Department:</label>
+                    <select id="faculty-department">
+                        <option value="" disabled selected>Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="faculty-program">Program:</label>
+                    <select id="faculty-program">
+                        <option value="" disabled selected>Select Program</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                <label for="faculty-picture">Picture:</label>
+                <div class="picture-upload">
+                    <div class="picture-placeholder" id="picture-placeholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <img class="picture-preview" id="picture-preview" alt="Preview">
+                    <input type="file" id="faculty-picture" accept="image/*" style="display: none;">
+                    <button type="button" class="picture-btn" onclick="document.getElementById('faculty-picture').click()">
+                        Choose Picture
+                    </button>
+                    <button type="button" class="remove-picture-btn" id="remove-picture-btn" style="display: none;">
+                        Remove Picture
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="faculty-pincode">Pin Code:</label>
+                <div class="pin-display" id="pin-display">------</div>
+                <button type="button" class="generate-pin-btn" id="generate-pin">
+                    <i class="fa-solid fa-refresh"></i> Generate New PIN
+                </button>
+                <input type="hidden" id="faculty-pin-code">
+            </div>
+                <!-- Add the Registration Status form group here -->
+                <div class="form-group">
+                    <label for="faculty-registration">Registration Status:</label>
+                    <div class="role-display" id="faculty-registration">Unregistered</div>
+                    <small>Note: Status will change to "Registered" when QR code is scanned.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    logPageAccess();
+
+    const adminMenu = document.querySelector(".admin-menu");
+    const dropdown = document.querySelector(".dropdown");
+
+    adminMenu.addEventListener("click", function (event) {
+        event.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        dropdown.style.display = "none";
+    });
+    
+    const logoutBtn = document.querySelector(".logout-btn");
+    const logoutModal = document.querySelector(".modal");
+    const yesBtn = document.querySelector(".yes-btn");
+    const noBtn = document.querySelector(".no-btn");
+
+    logoutBtn.addEventListener("click", function () {
+        logoutModal.style.display = "flex";
+    });
+
+    yesBtn.addEventListener("click", function () {
+        window.location.href = "login.html";
+    });
+
+    noBtn.addEventListener("click", function () {
+        logoutModal.style.display = "none";
+    });
+    
+    const addFacultyBtn = document.querySelector(".add-user-btn");
+    const addUserModal = document.querySelector(".add-user-modal");
+    const closeModalBtn = document.querySelector(".close-btn");
+    const cancelBtn = document.querySelector(".cancel-btn");
+    const formTitle = document.querySelector(".form-title");
+    
+    const departmentsData = {
+        "College of Engineering and Architecture": {
+            programs: ["BS Electronics Engineering", "BS Electrical Engineering", "BS Mechanical Engineering"]
+        },
+        "College of Computer Studies": {
+            programs: ["BS Information Technology", "BS Computer Science"]
+        },
+        "College of Accountancy and Business Program": {
+            programs: ["BS Accountancy", "BS Business Administration"]
+        },
+        "College of Maritime Studies": {
+            programs: ["BS Maritime Engineering", "BS Maritime Transportation"]
+        },
+        "College of Hospitality and Tourism Management": {
+            programs: ["BS Hospitality Management", "BS Tourism Management"]
+        },
+        "College of Criminal Justice Education": {
+            programs: ["BS Criminology"]
+        },
+        "College of Education and Journalism": {
+            programs: ["Bachelor of Secondary Education", "Bachelor of Elementary Education"]
+        }
+    };
+
+        function logAuditTrail(action, description) {
+        const formData = new FormData();
+        formData.append('action', 'log_audit_trail');
+        formData.append('audit_action', action);
+        formData.append('description', description);
+
+        fetch('PHP/audit_functions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'success') {
+                console.error('Failed to log audit trail:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error logging audit trail:', error);
+        });
+    }
+
+    // Function to log page access
+    function logPageAccess() {
+        logAuditTrail('PERSONAL_INFO_ACCESS', 'Accessed faculty personal information page');
+    }
+    
+    const departmentFilter = document.getElementById('department-filter');
+    const programFilter = document.getElementById('program-filter');
+    
+    function initializeFilters() {
+        departmentFilter.innerHTML = '<option value="">All Departments</option>';
+        Object.keys(departmentsData).forEach(dept => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            departmentFilter.appendChild(option);
+        });
+        
+        programFilter.innerHTML = '<option value="">All Programs</option>';
+        let allPrograms = new Set();
+        Object.values(departmentsData).forEach(dept => {
+            dept.programs.forEach(program => {
+                allPrograms.add(program);
+            });
+        });
+        Array.from(allPrograms).sort().forEach(program => {
+            const option = document.createElement("option");
+            option.value = program;
+            option.textContent = program;
+            programFilter.appendChild(option);
+        });
+    }
+    
+    initializeFilters();
+    
+    loadFacultyData();
+    
+    function applyFilters() {
+        const deptValue = departmentFilter.value;
+        const progValue = programFilter.value;
+        const regValue = document.getElementById('registration-filter').value;
+        const searchValue = document.querySelector(".search-box").value.toLowerCase();
+        
+        const rows = document.querySelectorAll(".user-table tbody tr");
+        
+        rows.forEach(row => {
+            if (row.classList.contains('no-records-message')) {
+                return;
+            }
+            
+            const facultyNumber = row.cells[0].textContent.toLowerCase();
+            const name = row.cells[3].textContent.toLowerCase();
+            const department = row.cells[4].textContent.toLowerCase();
+            const program = row.cells[5].textContent.toLowerCase();
+            const registration = row.cells[6].textContent.toLowerCase();
+            
+            const matchesDept = !deptValue || department.includes(deptValue.toLowerCase());
+            const matchesProg = !progValue || program.includes(progValue.toLowerCase());
+            const matchesReg = !regValue || registration.trim() === regValue.toLowerCase();
+            const matchesSearch = !searchValue || 
+                                facultyNumber.includes(searchValue) || 
+                                name.includes(searchValue) || 
+                                department.includes(searchValue) || 
+                                program.includes(searchValue);
+            
+            if (matchesDept && matchesProg && matchesReg && matchesSearch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+        
+        const visibleRows = document.querySelectorAll(".user-table tbody tr:not([style*='display: none'])");
+        const tbody = document.querySelector(".user-table tbody");
+        
+        const existingMessage = document.querySelector(".no-records-message");
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        if (visibleRows.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.className = "no-records-message";
+            emptyRow.innerHTML = '<td colspan="8" style="text-align: center; font-weight:bold;">No faculty records found</td>';
+            tbody.appendChild(emptyRow);
+        }
+    }
+
+    if (departmentFilter) departmentFilter.addEventListener('change', applyFilters);
+    if (programFilter) programFilter.addEventListener('change', applyFilters);
+    
+    const registrationFilter = document.getElementById('registration-filter');
+    if (registrationFilter) registrationFilter.addEventListener('change', applyFilters);
+    
+    const searchBox = document.querySelector(".search-box");
+    if (searchBox) {
+        searchBox.addEventListener("input", function() {
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(function() {
+                if (searchBox.value.length > 0) {
+                    logAuditTrail('SEARCH_PERSONAL_INFO', `Searched personal information: ${searchBox.value}`);
+                }
+                applyFilters(); 
+            }, 1000);
+        });
+        
+        searchBox.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                clearTimeout(this.searchTimer);
+                if (this.value.length > 0) {
+                    logAuditTrail('SEARCH_PERSONAL_INFO', `Searched personal information: ${this.value}`);
+                }
+                applyFilters();
+            }
+        });
+    }
+    
+    addFacultyBtn.addEventListener("click", function() {
+        logAuditTrail('ADD_FACULTY', 'Opened add faculty modal');
+        
+        formTitle.textContent = "Add Faculty Information";
+        
+        // Reset form fields
+        document.querySelector("#faculty-number").value = "";
+        document.querySelector("#faculty-name").value = "";
+        
+        // Reset dropdowns
+        const facultyDepartment = document.querySelector("#faculty-department");
+        facultyDepartment.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        Object.keys(departmentsData).forEach(dept => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            facultyDepartment.appendChild(option);
+        });
+        
+        document.querySelector("#faculty-program").innerHTML = '<option value="" disabled selected>Select Program</option>';
+        
+        // Reset picture
+        resetPictureUpload();
+        
+        // Generate new pin
+        generateNewPin();
+        
+        // Set up department change event
+        setupDepartmentChangeEvent();
+        
+        addUserModal.style.display = "flex";
+        
+        const saveBtn = document.querySelector(".save-btn");
+        delete saveBtn.dataset.facultyId;
+    });
+    
+    closeModalBtn.addEventListener("click", function() {
+        addUserModal.style.display = "none";
+    });
+    
+    cancelBtn.addEventListener("click", function() {
+        addUserModal.style.display = "none";
+    });
+    
+    const saveBtn = document.querySelector(".save-btn");
+    const facultyForm = document.querySelector("#add-faculty-form");
+    
+    saveBtn.addEventListener("click", function() {
+        const formData = new FormData();
+        const pictureFile = document.querySelector("#faculty-picture").files[0];
+        const preview = document.getElementById('picture-preview');
+        const placeholder = document.getElementById('picture-placeholder');
+        
+        formData.append('faculty_number', document.querySelector("#faculty-number").value);
+        formData.append('name', document.querySelector("#faculty-name").value);
+        formData.append('department', document.querySelector("#faculty-department").value);
+        formData.append('program', document.querySelector("#faculty-program").value);
+        
+        // Check if picture was removed (preview is hidden and placeholder is visible)
+        const isPictureRemoved = preview.style.display === 'none' && placeholder.style.display === 'flex';
+        
+        if (this.dataset.facultyId && isPictureRemoved) {
+            formData.append('remove_picture', '1');
+        }
+        
+        if (pictureFile) {
+            formData.append('picture', pictureFile);
+        }
+        
+        const pincode = document.querySelector("#faculty-pin-code").value;
+        if (pincode) {
+            formData.append('pincode', pincode);
+        }
+        
+        formData.append('action', this.dataset.facultyId ? 'update_faculty' : 'add_faculty');
+        
+        if (this.dataset.facultyId) {
+            formData.append('faculty_id', this.dataset.facultyId);
+        }
+        
+        fetch('PHP/admin-faculty_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showAlert('Faculty ' + (this.dataset.facultyId ? 'updated' : 'added') + ' successfully', 'success');
+                addUserModal.style.display = "none";
+                loadFacultyData();
+            } else {
+                showAlert('Error: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('An error occurred', 'error');
+        });
+    });
+
+    function resetPictureUpload() {
+        const preview = document.getElementById('picture-preview');
+        const placeholder = document.getElementById('picture-placeholder');
+        const removeBtn = document.getElementById('remove-picture-btn');
+        const fileInput = document.getElementById('faculty-picture');
+        
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        removeBtn.style.display = 'none';
+        fileInput.value = '';
+    }
+
+    initializePinGeneration();
+
+    function initializePinGeneration() {
+        const generatePinBtn = document.getElementById('generate-pin');
+        if (generatePinBtn) {
+            generatePinBtn.addEventListener('click', generateNewPin);
+        }
+        
+        generateNewPin();
+    }
+
+    function generateNewPin() {
+        const pin = Math.floor(100000 + Math.random() * 900000).toString();
+        const pinDisplay = document.getElementById('pin-display');
+        const pinInput = document.getElementById('faculty-pin-code');
+        
+        if (pinDisplay) {
+            pinDisplay.textContent = pin;
+        }
+        if (pinInput) {
+            pinInput.value = pin;
+        }
+    }
+        
+    document.getElementById('faculty-picture').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('picture-preview');
+                const placeholder = document.getElementById('picture-placeholder');
+                const removeBtn = document.getElementById('remove-picture-btn');
+                
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                removeBtn.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('remove-picture-btn').addEventListener('click', function() {
+        const preview = document.getElementById('picture-preview');
+        const placeholder = document.getElementById('picture-placeholder');
+        const removeBtn = document.getElementById('remove-picture-btn');
+        const fileInput = document.getElementById('faculty-picture');
+        
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        removeBtn.style.display = 'none';
+        fileInput.value = '';
+        
+        // Set a flag to indicate picture was removed
+        preview.dataset.removed = 'true';
+    });
+    
+    function loadFacultyData() {
+        const formData = new FormData();
+        formData.append('action', 'get_faculty');
+        
+        fetch('PHP/admin-faculty_perinfo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateFacultyTable(data.data);
+            } else {
+                showAlert('Error: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    function populateFacultyTable(facultyData) {
+        const tbody = document.querySelector(".user-table tbody");
+        tbody.innerHTML = '';
+        
+        if (facultyData.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.className = "no-records-message";
+            emptyRow.innerHTML = '<td colspan="8" style="text-align: center; font-weight:bold;">No faculty records found</td>';
+            tbody.appendChild(emptyRow);
+            return;
+        }
+        
+        facultyData.forEach(faculty => {
+            const newRow = document.createElement('tr');
+            newRow.dataset.id = faculty.id;
+            
+            const statusColor = faculty.registration_status === 'Registered' ? 'green' : 'red';
+            
+            // FIXED: Use consistent picture display logic
+            const pictureCell = faculty.picture ? 
+                `<img src="${faculty.picture}" alt="Profile" class="profile-picture" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <div class="no-picture" style="display: none;"><i class="fa-solid fa-user"></i></div>` :
+                `<div class="no-picture"><i class="fa-solid fa-user"></i></div>`;
+            
+            newRow.innerHTML = `
+                <td>${faculty.faculty_number}</td>
+                <td style="text-align: center; vertical-align: middle;">
+                    ${pictureCell}
+                </td>
+                <td><span class="pin-code-display">${faculty.pincode || 'Not Set'}</span></td>
+                <td>${faculty.name}</td>
+                <td>${faculty.department}</td>
+                <td>${faculty.program}</td>
+                <td><span style="color: ${statusColor}; font-weight: bold;">${faculty.registration_status}</span></td>
+                <td>
+                    <i class="fa-solid fa-edit edit-btn" data-id="${faculty.id}" style="color: #8869BB; margin-right: 10px; cursor: pointer;"></i>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+        });
+        
+        applyFilters();
+        setupActionButtons(); // Add this line to set up edit buttons
+    }
+
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            const tabName = this.textContent.trim();
+            logAuditTrail('SWITCH_TAB', `Switched to ${tabName} personal information tab`);
+        });
+    });
+
+    function setupDepartmentChangeEvent() {
+        const facultyDepartment = document.querySelector("#faculty-department");
+        const facultyProgram = document.querySelector("#faculty-program");
+        
+        // Remove existing event listeners by cloning
+        const newDepartment = facultyDepartment.cloneNode(true);
+        facultyDepartment.parentNode.replaceChild(newDepartment, facultyDepartment);
+        
+        const newProgram = facultyProgram.cloneNode(true);
+        facultyProgram.parentNode.replaceChild(newProgram, facultyProgram);
+        
+        newDepartment.addEventListener("change", function() {
+            const selectedDept = newDepartment.value;
+            const programs = departmentsData[selectedDept]?.programs || [];
+            
+            newProgram.innerHTML = '<option value="" disabled selected>Select Program</option>';
+            programs.forEach(program => {
+                const option = document.createElement("option");
+                option.value = program;
+                option.textContent = program;
+                newProgram.appendChild(option);
+            });
+        });
+        
+        return { newDepartment, newProgram };
+    }
+
+    function setupActionButtons() {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        
+        editButtons.forEach(button => {
+            // Remove any existing event listeners to prevent duplicates
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            newButton.addEventListener('click', function() {
+                console.log('Edit button clicked');
+                
+                const row = this.closest('tr');
+                const facultyId = row.dataset.id;
+                const facultyName = row.cells[3].textContent;
+                
+                // Get current values from the table row
+                const facultyNumber = row.cells[0].textContent;
+                const name = row.cells[3].textContent;
+                const department = row.cells[4].textContent;
+                const program = row.cells[5].textContent;
+                
+                console.log('Current row data:', { facultyId, facultyNumber, name, department, program });
+                
+                logAuditTrail('EDIT_FACULTY_INFO', `Editing faculty information: ${facultyName}`);
+                
+                // Call the edit function with current values
+                editFaculty(facultyId, facultyNumber, name, department, program);
+            });
+        });
+    }
+
+    function editFaculty(facultyId, facultyNumber, name, department, program) {
+            console.log('Editing faculty:', { facultyId, facultyNumber, name, department, program });
+            
+            logAuditTrail('EDIT_FACULTY_INFO', 'Editing faculty information');
+
+            const formData = new FormData();
+            formData.append('action', 'get_single_faculty');
+            formData.append('faculty_id', facultyId);
+            
+            fetch('PHP/admin-faculty_perinfo.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const faculty = data.data;
+                    
+                    // Populate basic fields
+                    document.querySelector("#faculty-number").value = faculty.faculty_number;
+                    document.querySelector("#faculty-name").value = faculty.name;
+                    document.querySelector("#faculty-registration").textContent = faculty.registration_status;
+                    document.querySelector("#pin-display").textContent = faculty.pincode || '------';
+                    document.querySelector("#faculty-pin-code").value = faculty.pincode || '';
+                    
+                    // Handle picture
+                    const preview = document.getElementById('picture-preview');
+                    const placeholder = document.getElementById('picture-placeholder');
+                    const removeBtn = document.getElementById('remove-picture-btn');
+                    
+                    if (faculty.picture) {
+                        preview.src = faculty.picture;
+                        preview.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        removeBtn.style.display = 'block';
+                        // Clear the removed flag when loading existing picture
+                        delete preview.dataset.removed;
+                    } else {
+                        preview.style.display = 'none';
+                        placeholder.style.display = 'flex';
+                        removeBtn.style.display = 'none';
+                    }
+                    
+                    document.getElementById('faculty-picture').value = '';
+                    
+                    // FIXED: Populate department dropdown correctly
+                    const facultyDepartment = document.querySelector("#faculty-department");
+                    facultyDepartment.innerHTML = '<option value="" disabled>Select Department</option>';
+                    Object.keys(departmentsData).forEach(dept => {
+                        const option = document.createElement("option");
+                        option.value = dept;
+                        option.textContent = dept;
+                        // Set selected based on actual saved department
+                        if (dept === faculty.department) {
+                            option.selected = true;
+                            console.log('Setting department to:', dept);
+                        }
+                        facultyDepartment.appendChild(option);
+                    });
+                    
+                    // FIXED: Populate program dropdown based on selected department
+                    const facultyProgram = document.querySelector("#faculty-program");
+                    if (faculty.department && departmentsData[faculty.department]) {
+                        facultyProgram.innerHTML = '<option value="" disabled>Select Program</option>';
+                        departmentsData[faculty.department].programs.forEach(prog => {
+                            const option = document.createElement("option");
+                            option.value = prog;
+                            option.textContent = prog;
+                            // Set selected based on actual saved program
+                            if (prog === faculty.program) {
+                                option.selected = true;
+                                console.log('Setting program to:', prog);
+                            }
+                            facultyProgram.appendChild(option);
+                        });
+                    } else {
+                        facultyProgram.innerHTML = '<option value="" disabled selected>Select Program</option>';
+                    }
+                    
+                    // Set up department change event for future changes
+                    setupDepartmentChangeEvent();
+                    
+                    formTitle.textContent = "Edit Faculty Information";
+                    addUserModal.style.display = "flex";
+                    
+                    document.querySelector(".save-btn").dataset.facultyId = facultyId;
+                    
+                    console.log('Form populated with:', {
+                        department: faculty.department,
+                        program: faculty.program
+                    });
+                    
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while fetching faculty data', 'error');
+            });
+        }
+
+    closeModalBtn.addEventListener("click", function() {
+        addUserModal.style.display = "none";
+        facultyForm.reset();
+        resetPictureUpload();
+    });
+
+    cancelBtn.addEventListener("click", function() {
+        addUserModal.style.display = "none";
+        facultyForm.reset();
+        resetPictureUpload();
+    });
+    
+    function showAlert(message, type) {
+        alert(message);
+    }
+    
+    const facultyDepartment = document.querySelector("#faculty-department");
+    if (facultyDepartment) {
+        facultyDepartment.addEventListener("change", function() {
+            const selectedDept = facultyDepartment.value;
+            const programs = departmentsData[selectedDept]?.programs || [];
+            const facultyProgram = document.querySelector("#faculty-program");
+            facultyProgram.innerHTML = '<option value="" disabled selected>Select Program</option>';
+            programs.forEach(program => {
+                const option = document.createElement("option");
+                option.value = program;
+                option.textContent = program;
+                facultyProgram.appendChild(option);
+            });
+        });
+    }
+
+    // File upload functionality - CSV ONLY
+const addFileBtn = document.querySelector(".add-file-btn");
+const fileUploadModal = document.createElement("div");
+fileUploadModal.className = "file-upload-modal";
+fileUploadModal.innerHTML = `
+    <div class="file-upload-form">
+        <div class="file-upload-header">
+            <div class="file-upload-title"><i class="fa-solid fa-file-import"></i> Faculty Personal Information</div>
+            <button class="close-upload-btn">&times;</button>
+        </div>
+        
+        <div class="file-upload-instructions">
+            <h4>File Requirements:</h4>
+            <ul>
+                <li>File format: CSV only</li>
+                <li>Required columns: Faculty Number, Name, Department, Program</li>
+                <li>Optional columns: Pincode (6 digits)</li>
+                <li>Maximum file size: 5MB</li>
+                <li>First row should contain column headers</li>
+            </ul>
+        </div>
+        
+        <div class="file-upload-area" id="file-upload-area">
+            <i class="fa-solid fa-cloud-upload-alt"></i>
+            <div class="file-upload-text">Click to upload or drag and drop</div>
+            <div class="file-upload-hint">CSV files only</div>
+            <input type="file" id="faculty-file" class="file-input" accept=".csv">
+        </div>
+        
+        <div class="upload-preview" id="upload-preview">
+            <h4>File Preview (First 5 rows):</h4>
+            <div id="preview-table"></div>
+        </div>
+        
+        <div class="upload-actions">
+            <button class="cancel-upload-btn">Cancel</button>
+            <button class="upload-btn" id="upload-btn" disabled>Upload File</button>
+        </div>
+    </div>
+`;
+
+document.body.appendChild(fileUploadModal);
+
+        // File upload event listeners
+        addFileBtn.addEventListener("click", function() {
+            logAuditTrail('ADD_FILE_FACULTY', 'Opened file upload modal for faculty data');
+            fileUploadModal.style.display = "flex";
+        });
+
+        document.querySelector(".close-upload-btn").addEventListener("click", function() {
+            fileUploadModal.style.display = "none";
+            resetFileUpload();
+        });
+
+        document.querySelector(".cancel-upload-btn").addEventListener("click", function() {
+            fileUploadModal.style.display = "none";
+            resetFileUpload();
+        });
+
+        // File upload area functionality
+        const fileUploadArea = document.getElementById("file-upload-area");
+        const fileInput = document.getElementById("faculty-file");
+        const uploadPreview = document.getElementById("upload-preview");
+        const previewTable = document.getElementById("preview-table");
+        const uploadBtn = document.getElementById("upload-btn");
+
+        fileUploadArea.addEventListener("click", function() {
+            fileInput.click();
+        });
+
+        fileUploadArea.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            fileUploadArea.style.backgroundColor = "#e9ecef";
+        });
+
+        fileUploadArea.addEventListener("dragleave", function() {
+            fileUploadArea.style.backgroundColor = "";
+        });
+
+        fileUploadArea.addEventListener("drop", function(e) {
+            e.preventDefault();
+            fileUploadArea.style.backgroundColor = "";
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelection(files[0]);
+            }
+        });
+
+        fileInput.addEventListener("change", function(e) {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelection(file) {
+            // Only accept CSV files
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                alert('Please select a CSV file only. Excel files are not supported.');
+                return;
+            }
+            
+            if (!file.type.includes('csv') && file.type !== 'text/csv') {
+                alert('Please select a valid CSV file.');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB.');
+                return;
+            }
+            
+            previewFile(file);
+        }
+
+        function previewFile(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                parseCSV(e.target.result);
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function parseCSV(csvText) {
+            try {
+                const rows = csvText.split('\n').filter(row => row.trim() !== '');
+                if (rows.length === 0) {
+                    alert('CSV file is empty');
+                    return;
+                }
+                
+                const headers = rows[0].split(',').map(header => header.trim());
+                
+                const requiredColumns = ['Faculty Number', 'Name', 'Department', 'Program'];
+                const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+                
+                if (missingColumns.length > 0) {
+                    alert(`Missing required columns: ${missingColumns.join(', ')}`);
+                    return;
+                }
+                
+                const data = rows.slice(1, 6).map(row => {
+                    const values = row.split(',').map(value => value.trim());
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = values[index] || '';
+                    });
+                    return obj;
+                });
+                
+                displayPreview(headers, data);
+                uploadBtn.disabled = false;
+                uploadBtn.fileData = { type: 'csv', data: csvText, filename: 'faculty_upload.csv' };
+            } catch (error) {
+                alert('Error parsing CSV file: ' + error.message);
+                resetFileUpload();
+            }
+        }
+
+        function displayPreview(headers, data) {
+            let tableHTML = `<table><thead><tr>`;
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += `</tr></thead><tbody>`;
+            
+            data.forEach(row => {
+                tableHTML += `<tr>`;
+                headers.forEach(header => {
+                    tableHTML += `<td>${row[header] || ''}</td>`;
+                });
+                tableHTML += `</tr>`;
+            });
+            
+            tableHTML += `</tbody></table>`;
+            previewTable.innerHTML = tableHTML;
+            uploadPreview.style.display = 'block';
+        }
+
+        function resetFileUpload() {
+            fileInput.value = '';
+            uploadPreview.style.display = 'none';
+            uploadBtn.disabled = true;
+            delete uploadBtn.fileData;
+        }
+
+        // Upload functionality
+        uploadBtn.addEventListener("click", function() {
+            if (!uploadBtn.fileData) return;
+            
+            if (!navigator.onLine) {
+                const uploads = JSON.parse(localStorage.getItem('pendingFacultyUploads') || '[]');
+                uploads.push({
+                    id: Date.now(),
+                    type: uploadBtn.fileData.type,
+                    data: uploadBtn.fileData.data,
+                    filename: uploadBtn.fileData.filename,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('pendingFacultyUploads', JSON.stringify(uploads));
+                
+                alert('File saved for upload when online. You can continue working offline.');
+                fileUploadModal.style.display = "none";
+                resetFileUpload();
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('action', 'bulk_upload');
+            formData.append('file_type', uploadBtn.fileData.type);
+            formData.append('file_data', uploadBtn.fileData.data);
+            formData.append('filename', uploadBtn.fileData.filename);
+            
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            
+            fetch('PHP/admin-faculty_perinfo.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(`Successfully uploaded ${data.processed} faculty records`);
+                    fileUploadModal.style.display = "none";
+                    resetFileUpload();
+                    loadFacultyData();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error uploading file. Please try again.');
+            })
+            .finally(() => {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = 'Upload File';
+            });
+        });
+
+        // Handle offline/online status
+        window.addEventListener('online', function() {
+            const pendingUploads = JSON.parse(localStorage.getItem('pendingFacultyUploads') || '[]');
+            if (pendingUploads.length > 0) {
+                processPendingUploads(pendingUploads);
+            }
+        });
+
+        function processPendingUploads(uploads) {
+            if (uploads.length === 0) return;
+            
+            const upload = uploads[0];
+            const formData = new FormData();
+            formData.append('action', 'bulk_upload');
+            formData.append('file_type', upload.type);
+            formData.append('file_data', upload.data);
+            formData.append('filename', upload.filename);
+            
+            fetch('PHP/admin-faculty_perinfo.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const remainingUploads = uploads.slice(1);
+                    localStorage.setItem('pendingFacultyUploads', JSON.stringify(remainingUploads));
+                    
+                    if (remainingUploads.length > 0) {
+                        processPendingUploads(remainingUploads);
+                    } else {
+                        alert('All pending uploads completed successfully');
+                        loadFacultyData();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error processing pending upload:', error);
+            });
+        }
+});
+</script>
+</body>
+</html>

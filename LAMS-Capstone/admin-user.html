@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="CSS/admin-user.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo" class="logo">
+            <span class="title">ALAMS</span>
+        </div>
+        <div class="admin-menu">
+            <span>ADMIN</span>
+            <i class="fa-solid fa-caret-down"></i>
+            <div class="dropdown">
+                <button class="logout-btn">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <a href="admin-dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="admin-register.html" class="menu-item"><i class="fa-solid fa-qrcode" style="color: #ffffff;"></i>Registration</a>
+            <a href="admin-scanner.html" class="menu-item"><i class="fa-solid fa-expand"></i> Scanner</a>
+            <a href="admin-students_attendance.html" class="menu-item"><i class="fa-solid fa-clipboard" style="color: #ffffff;"></i>Attendances</a>
+            <a href="admin-student_perinfo.html" class="menu-item"><i class="fa-solid fa-user"></i>Personal Information</a>
+            <a href="admin-user.html" class="menu-item "><i class="fa-solid fa-user-gear"></i> User Management</a>
+        </aside>
+
+        <div class="dashboard">
+            <h1>User Management</h1>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="admin-tab">Admin Users</button>
+                    <button class="tab" data-tab="audit-tab">Audit Trail</button>
+                </div>
+                
+                <div id="admin-tab" class="tab-content active">
+                    <div class="search-container">
+                        <input type="text" class="search-box" placeholder="Search admin users...">
+                        <button class="add-user-btn"><i class="fa-solid fa-plus"></i> Add Admin</button>
+                    </div>
+                    
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="audit-tab" class="tab-content">
+                    <div class="search-container">
+                        <input type="text" class="search-box search-box-audit" placeholder="Search users...">
+                        <button class="refresh-audit-btn"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                    </div>
+                    
+                    <div class="users-table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Users list will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- User Activities Modal -->
+                    <div class="user-activities-modal">
+                        <div class="activities-modal-content">
+                            <div class="modal-header">
+                                <h3>User Activities: <span id="selected-username"></span></h3>
+                                <button class="close-activities-btn">&times;</button>
+                            </div>
+                            <div class="activities-search-container">
+                                <input type="text" class="search-activities" placeholder="Search activities...">
+                                <select class="action-filter">
+                                    <option value="">All Actions</option>
+                                    <option value="USER_CREATE">User Created</option>
+                                    <option value="USER_UPDATE">User Updated</option>
+                                    <option value="USER_DELETE">User Deleted</option>
+                                    <option value="DASHBOARD_ACCESS">Dashboard Access</option>
+                                    <option value="VIEW_LOGS_HISTORY">View System Logs</option>
+                                    <option value="ATTENDANCE_ACCESS">Attendance Access</option>
+                                    <option value="GENERATE_REPORT">Generate Report</option>
+                                    <option value="SEARCH_ATTENDANCE">Search Attendance</option>
+                                    <option value="SWITCH_TAB">Switch Tab</option>
+                                    <option value="PERSONAL_INFO_ACCESS">Personal Info Access</option>
+                                    <option value="EDIT_STUDENT_INFO">Edit Student Info</option>
+                                    <option value="EDIT_FACULTY_INFO">Edit Faculty Info</option>
+                                    <option value="EDIT_STAFF_INFO">Edit Staff Info</option>
+                                    <option value="SEARCH_PERSONAL_INFO">Search Personal Info</option>
+                                    <option value="ADD_FILE_STUDENT">Add File Student</option>
+                                    <option value="ADD_FILE_FACULTY">Add File Faculty</option>
+                                    <option value="ADD_FILE_STAFF">Add File Staff</option>
+                                    <option value="ADD_STUDENT">Add Student</option>
+                                    <option value="ADD_FACULTY">Add Faculty</option>
+                                    <option value="ADD_STAFF">Add Staff</option>
+                                    <option value="REGISTRATION_ACCESS">Registration Access</option>
+                                    <option value="SCANNER_ACCESS">Scanner Access</option>
+                                </select>
+                            </div>
+                            <div class="activities-table-container">
+                                <table class="activities-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Action</th>
+                                            <th>Description</th>
+                                            <th>IP Address</th>
+                                            <th>Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- User activities will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="activities-pagination">
+                                <button class="activities-prev-btn" disabled>Previous</button>
+                                <span class="activities-page-info">Page 1 of 1</span>
+                                <button class="activities-next-btn" disabled>Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="modal-content">
+            <p>Do you want to log out?</p>
+            <div class="modal-buttons">
+                <button class="yes-btn">Yes</button>
+                <button class="no-btn">No</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="add-user-modal">
+        <div class="add-user-form">
+            <div class="form-header">
+                <h2 class="form-title">Add Admin User</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="add-user-form">
+                <div class="form-group">
+                    <label for="user-name">Name</label>
+                    <input type="text" id="user-name" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-role-display">Role</label>
+                    <div id="user-role-display" class="role-display">Admin</div>
+                </div>
+                <div class="form-group">
+                    <label for="user-username">Username</label>
+                    <input type="text" id="user-username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email</label>
+                    <input type="email" id="user-email" placeholder="Enter email address" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Password</label>
+                    <input type="password" id="user-password" placeholder="Enter password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+    $(document).ready(function() {
+        // Load only Admin users
+        loadUsers('Admin', '#admin-tab .user-table tbody');
+
+        function loadUsers(role, targetSelector) {
+            $.ajax({
+                url: 'PHP/superadmin-user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'getUsers',
+                    role: role
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        let tbody = $(targetSelector);
+                        tbody.empty();
+                        
+                        if (response.users.length === 0) {
+                            tbody.append(`<tr><td colspan="5" class="text-center">No users found</td></tr>`);
+                            return;
+                        }
+                        
+                        response.users.forEach(function(user) {
+                            let row = `
+                                <tr data-id="${user.id}">
+                                    <td>${user.name}</td>
+                                    <td>${user.role}</td>
+                                    <td>${user.username}</td>
+                                    <td>${user.email}</td>
+                                    <td>
+                                        <i class="fa-solid fa-edit edit-user" style="color: #8869BB; margin-right: 10px; cursor: pointer;"></i>
+                                        <i class="fa-solid fa-trash delete-user" style="color: red; cursor: pointer;"></i>
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.append(row);
+                        });
+                        
+                        setupActionButtons();
+                    } else {
+                        alert('Error loading users: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('XHR Response:', xhr.responseText);
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+                    
+                    // Show more detailed error
+                    alert('Failed to load users. Server returned: ' + xhr.status + ' - ' + xhr.statusText + '\nCheck browser console for details.');
+                }
+            });
+        }
+
+        $("#admin-tab .search-box").on("input", function() {
+            let searchTerm = $(this).val();
+            searchUsers('Admin', searchTerm, '#admin-tab .user-table tbody');
+        });
+
+        function getActionDetails(log) {
+            // Handle specific actions
+            if (log.action === 'DASHBOARD_ACCESS') {
+                return 'Viewed Library Entries';
+            }
+            if (log.action === 'VIEW_SYSTEM_LOGS') {
+                return 'Viewed System Access Logs';
+            }
+            if (log.action === 'VIEW_LOGS_HISTORY') {
+                return 'Viewed System Logs';
+            }
+            if (log.action === 'ATTENDANCE_ACCESS') {
+                return 'Accessed Attendance Page';
+            }
+            if (log.action === 'GENERATE_REPORT') {
+                return 'Generated Attendance Report';
+            }
+            if (log.action === 'SEARCH_ATTENDANCE') {
+                return 'Searched Attendance Records';
+            }
+            if (log.action === 'SWITCH_TAB') {
+                return 'Switched Attendance Tab';
+            }
+            if (log.action === 'PERSONAL_INFO_ACCESS') {
+                return 'Accessed Personal Information Page';
+            }
+            if (log.action === 'EDIT_STUDENT_INFO') {
+                return 'Edited Student Information';
+            }
+            if (log.action === 'EDIT_FACULTY_INFO') {
+                return 'Edited Faculty Information';
+            }
+            if (log.action === 'EDIT_STAFF_INFO') {
+                return 'Edited Staff Information';
+            }
+            if (log.action === 'SEARCH_PERSONAL_INFO') {
+                return 'Searched Personal Information';
+            }
+            if (log.action === 'ADD_FILE_STUDENT') {
+                return 'Uploaded Student Data File';
+            }
+            if (log.action === 'ADD_FILE_FACULTY') {
+                return 'Uploaded Faculty Data File';
+            }
+            if (log.action === 'ADD_FILE_STAFF') {
+                return 'Uploaded Staff Data File';
+            }
+            if (log.action === 'ADD_STUDENT') {
+                return 'Added New Student';
+            }
+            if (log.action === 'ADD_FACULTY') {
+                return 'Added New Faculty Member';
+            }
+            if (log.action === 'ADD_STAFF') {
+                return 'Added New Staff Member';
+            }
+            if (log.action === 'REGISTRATION_ACCESS') {
+                return 'Accessed Registration Page';
+            }
+            if (log.action === 'SEARCH_REGISTRATION') {
+                return 'Searched ID Number';
+            }
+            if (log.action === 'SCANNER_ACCESS') {
+                return 'Accessed QR Scanner Page';
+            }
+            
+            if (!log.old_values && !log.new_values) return '-';
+            
+            let details = '';
+            
+            if (log.old_values && log.new_values) {
+                // Update action
+                const changes = [];
+                for (const key in log.new_values) {
+                    if (log.old_values[key] !== log.new_values[key]) {
+                        // Don't show password or pincode changes in detail
+                        if (key !== 'password' && key !== 'pincode') {
+                            changes.push(`${key}: "${log.old_values[key]}" → "${log.new_values[key]}"`);
+                        } else if (log.new_values[key] === '***') {
+                            changes.push(`${key}: updated`);
+                        }
+                    }
+                }
+                details = changes.join('; ');
+            } else if (log.new_values) {
+                // Create action
+                details = 'New user created';
+            } else if (log.old_values) {
+                // Delete action
+                details = 'User deleted from system';
+            }
+            
+            return details || '-';
+        }
+            
+        function searchUsers(role, searchTerm, targetSelector) {
+            $.ajax({
+                url: 'PHP/superadmin-user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'getUsers',
+                    role: role,
+                    search: searchTerm
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        let tbody = $(targetSelector);
+                        tbody.empty();
+                        
+                        if (response.users.length === 0) {
+                            tbody.append(`<tr><td colspan="5" class="text-center">No matching users found</td></tr>`);
+                            return;
+                        }
+                        
+                        response.users.forEach(function(user) {
+                            let row = `
+                                <tr data-id="${user.id}">
+                                    <td>${user.name}</td>
+                                    <td>${user.role}</td>
+                                    <td>${user.username}</td>
+                                    <td>${user.email}</td>
+                                    <td>
+                                        <i class="fa-solid fa-edit edit-user" style="color: #8869BB; margin-right: 10px; cursor: pointer;"></i>
+                                        <i class="fa-solid fa-trash delete-user" style="color: red; cursor: pointer;"></i>
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.append(row);
+                        });
+                        
+                        setupActionButtons();
+                    }
+                }
+            });
+        }
+
+        $("#admin-tab .add-user-btn").click(function() {
+            $(".form-title").text("Add Admin User");
+            $("#user-role-display").text("Admin");
+            $("#user-name").val("");
+            $("#user-username").val("");
+            $("#user-email").val("");
+            $("#user-password").val("");
+            $(".add-user-modal").css("display", "flex");
+            $(".save-btn").removeData("editId");
+        });
+
+        $(".tab").click(function() {
+            const tabId = $(this).attr("data-tab");
+            localStorage.setItem('activeTab', tabId);
+        });
+
+        // Load active tab from localStorage on page load
+        $(document).ready(function() {
+            const savedTab = localStorage.getItem('activeTab');
+            if (savedTab) {
+                $(".tab").removeClass("active");
+                $(".tab-content").removeClass("active");
+                $(`.tab[data-tab="${savedTab}"]`).addClass("active");
+                $(`#${savedTab}`).addClass("active");
+                
+                // Load content for the saved tab
+                if (savedTab === 'audit-tab') {
+                    loadUsersForAudit();
+                }
+            }
+        });
+        
+        function setupActionButtons() {
+            $(".edit-user").off("click").on("click", function() {
+                const row = $(this).closest('tr');
+                const userId = row.data('id');
+                
+                $.ajax({
+                    url: 'PHP/superadmin-user.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'getUser',
+                        id: userId
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const user = response.user;
+                            $("#user-name").val(user.name);
+                            $("#user-role-display").text(user.role);
+                            $("#user-username").val(user.username);
+                            $("#user-email").val(user.email);
+                            $("#user-password").val("");
+                            
+                            $(".form-title").text(`Edit ${user.role} User`);
+                            $(".add-user-modal").css("display", "flex");
+                            $(".save-btn").data("editId", userId);
+                        } else {
+                            alert('Error loading user details: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to load user details. Please try again.');
+                    }
+                });
+            });
+            
+            $(".delete-user").off("click").on("click", function() {
+                if (confirm("Are you sure you want to delete this user?")) {
+                    const row = $(this).closest('tr');
+                    const userId = row.data('id');
+                    
+                    $.ajax({
+                        url: 'PHP/superadmin-user.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            action: 'delete',
+                            id: userId
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                row.remove();
+                                alert('User deleted successfully!');
+                            } else {
+                                alert('Error: ' + response.message);
+                            }
+                        },
+                        error: function() {
+                            alert('Failed to delete user. Please try again.');
+                        }
+                    });
+                }
+            });
+        }
+
+        $(".tab[data-tab='audit-tab']").click(function() {
+            loadUsersForAudit();
+        });
+
+        let currentSelectedUserId = null;
+        let currentSelectedUsername = null;
+
+        function loadUsersForAudit() {
+            const searchTerm = $(".search-box-audit").val();
+            
+            $.ajax({
+                url: 'PHP/superadmin-user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'getUsersForAudit',
+                    search: searchTerm
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        renderUsersList(response.users);
+                    } else {
+                        alert('Error loading users: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Failed to load users. Please try again.');
+                }
+            });
+        }
+
+        function renderUsersList(users) {
+            const tbody = $("#audit-tab .users-table tbody");
+            tbody.empty();
+            
+            if (users.length === 0) {
+                tbody.append(`<tr><td colspan="6" class="text-center">No users found</td></tr>`);
+                return;
+            }
+            
+            users.forEach(function(user) {
+                const row = `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td>${user.role}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button class="view-activities-btn" data-user-id="${user.id}" data-username="${user.username}">
+                                <i class="fa-solid fa-eye"></i> View Activities
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+            
+            // Setup view buttons
+            $(".view-activities-btn").off("click").on("click", function() {
+                const userId = $(this).data('user-id');
+                const username = $(this).data('username');
+                viewUserActivities(userId, username);
+            });
+        }
+
+        function viewUserActivities(userId, username) {
+            currentSelectedUserId = userId;
+            currentSelectedUsername = username;
+            
+            // Update modal title
+            $("#selected-username").text(username);
+            
+            // Show modal
+            $(".user-activities-modal").css("display", "flex");
+            
+            // Load user activities
+            loadUserActivities(1);
+        }
+
+        function loadUserActivities(page) {
+            if (!currentSelectedUserId) return;
+            
+            const searchTerm = $(".search-activities").val();
+            const actionFilter = $(".action-filter").val();
+            
+            $.ajax({
+                url: 'PHP/superadmin-user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'getUserAuditLogs',
+                    user_id: currentSelectedUserId,
+                    page: page,
+                    limit: 50,
+                    search: searchTerm,
+                    action_filter: actionFilter
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        renderUserActivities(response.logs);
+                        updateActivitiesPagination(response.page, response.total_pages);
+                    } else {
+                        alert('Error loading user activities: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Failed to load user activities. Please try again.');
+                }
+            });
+        }
+
+        function renderUserActivities(logs) {
+            const tbody = $(".activities-table tbody");
+            tbody.empty();
+            
+            if (logs.length === 0) {
+                tbody.append(`<tr><td colspan="5" class="text-center">No activities found for this user</td></tr>`);
+                return;
+            }
+            
+            logs.forEach(function(log) {
+                const timestamp = new Date(log.timestamp).toLocaleString();
+                const details = getActionDetails(log);
+                
+                const row = `
+                    <tr>
+                        <td>${timestamp}</td>
+                        <td><span class="action-badge ${log.action.toLowerCase()}">${log.action}</span></td>
+                        <td>${log.description}</td>
+                        <td>${log.ip_address}</td>
+                        <td>${details}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function updateActivitiesPagination(currentPage, totalPages) {
+            $(".activities-page-info").text(`Page ${currentPage} of ${totalPages}`);
+            $(".activities-prev-btn").prop('disabled', currentPage <= 1);
+            $(".activities-next-btn").prop('disabled', currentPage >= totalPages);
+            
+            $(".activities-prev-btn").off('click').on('click', function() {
+                if (currentPage > 1) {
+                    loadUserActivities(currentPage - 1);
+                }
+            });
+            
+            $(".activities-next-btn").off('click').on('click', function() {
+                if (currentPage < totalPages) {
+                    loadUserActivities(currentPage + 1);
+                }
+            });
+        }
+
+        $(".search-box-audit").on("input", function() {
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(function() {
+                loadUsersForAudit();
+            }, 1000);
+        });
+
+        $(".search-activities").on("input", function() {
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(function() {
+                loadUserActivities(1);
+            }, 1000);
+        });
+
+        
+
+        $(".action-filter").on("change", function() {
+            loadUserActivities(1);
+        });
+
+        $(".refresh-audit-btn").on("click", function() {
+            loadUsersForAudit();
+        });
+
+        // Close activities modal
+        $(".close-activities-btn").on("click", function() {
+            $(".user-activities-modal").css("display", "none");
+            currentSelectedUserId = null;
+            currentSelectedUsername = null;
+        });
+
+        // Close modal when clicking outside
+        $(".user-activities-modal").on("click", function(e) {
+            if (e.target === this) {
+                $(".user-activities-modal").css("display", "none");
+                currentSelectedUserId = null;
+                currentSelectedUsername = null;
+            }
+        });
+        
+        $(".save-btn").click(function() {
+            const name = $("#user-name").val();
+            const role = $("#user-role-display").text();
+            const username = $("#user-username").val();
+            const email = $("#user-email").val();
+            const password = $("#user-password").val();
+            
+            if (name && role && username && email) {
+                const userId = $(this).data("editId");
+                const isEdit = typeof userId !== 'undefined';
+                
+                if (!isEdit && !password) {
+                    alert("Please enter a password!");
+                    return;
+                }
+                
+                if (!isValidEmail(email)) {
+                    alert("Please enter a valid email address!");
+                    return;
+                }
+                
+                const data = {
+                    action: isEdit ? 'edit' : 'add',
+                    name: name,
+                    role: role,
+                    username: username,
+                    email: email,
+                    password: password,
+                    send_email: 'true' // Send as string instead of boolean
+                };
+                
+                if (isEdit) {
+                    data.id = userId;
+                }
+                
+                console.log('Sending data:', data); // Debug log
+                
+                $.ajax({
+                    url: 'PHP/superadmin-user.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data,
+                    success: function(response) {
+                        console.log('Server response:', response); // Debug log
+                        if (response.status === 'success') {
+                            $(".add-user-modal").css("display", "none");
+                            
+                            // Show appropriate message
+                            let message = response.message;
+                            if (response.email_status) {
+                                message += '\nEmail Status: ' + response.email_status;
+                            }
+                            
+                            alert(message);
+                            loadUsers('Admin', '#admin-tab .user-table tbody');
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('AJAX Error:', xhr.responseText, status, error);
+                        alert('Failed to save user. Please check console for details.');
+                    }
+                });
+            } else {
+                alert("Please fill in all required fields!");
+            }
+        });
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        const adminMenu = $(".admin-menu");
+        const dropdown = $(".dropdown");
+
+        adminMenu.click(function(event) {
+            event.stopPropagation();
+            dropdown.css("display", dropdown.css("display") === "block" ? "none" : "block");
+        });
+
+        $(document).click(function() {
+            dropdown.css("display", "none");
+        });
+        
+        const tabs = $(".tab");
+        const tabContents = $(".tab-content");
+        
+        tabs.click(function() {
+            tabs.removeClass("active");
+            tabContents.removeClass("active");
+            
+            $(this).addClass("active");
+            const tabId = $(this).attr("data-tab");
+            $("#" + tabId).addClass("active");
+        });
+        
+        const logoutBtn = $(".logout-btn");
+        const logoutModal = $(".modal");
+        const yesBtn = $(".yes-btn");
+        const noBtn = $(".no-btn");
+
+        logoutBtn.click(function() {
+            logoutModal.css("display", "flex");
+        });
+
+        yesBtn.click(function() {
+            window.location.href = "login.html";
+        });
+
+        noBtn.click(function() {
+            logoutModal.css("display", "none");
+        });
+        
+        const closeModalBtn = $(".close-btn");
+        const cancelBtn = $(".cancel-btn");
+        
+        closeModalBtn.click(function() {
+            $(".add-user-modal").css("display", "none");
+        });
+        
+        cancelBtn.click(function() {
+            $(".add-user-modal").css("display", "none");
+        });
+    });
+    </script>
+</body>
+</html>
